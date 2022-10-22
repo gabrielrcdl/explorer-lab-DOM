@@ -1,6 +1,9 @@
 import "./css/index.css";
 import IMask from "imask";
 
+
+
+
 const ccBgColor01 = document.querySelector(
   ".cc-bg svg > g g:nth-child(1) path"
 );
@@ -23,6 +26,10 @@ function setCardType(type) {
 
 // Colocando o arquivo no global
 globalThis.setCardType = setCardType;
+
+
+
+
 
 const securityCode = document.querySelector("#security-code");
 const securityCodePattern = {
@@ -48,6 +55,7 @@ const expirationDatePattern = {
     },
   },
 };
+
 
 const expirationDateMasked = IMask(expirationDate, expirationDatePattern);
 
@@ -85,3 +93,65 @@ const cardNumberPatter = {
   },
 };
 const cardNumberMasked = IMask(cardNumber, cardNumberPatter);
+
+
+
+
+// deixar de recarregar a página ao submeter um formulário
+document.querySelector("form").addEventListener("submit", (event)=>{
+  event.defaultPrevented()
+})
+
+
+
+const addButton = document.querySelector("#add-card")
+addButton.addEventListener("click", () => {
+  alert("Cartão adicionado com sucesso!")
+})
+
+
+const cardHolder = document.querySelector("#card-holder");
+cardHolder.addEventListener("input", ()=> {
+  const ccHolder = document.querySelector(".cc-holder .value")
+
+  ccHolder.innerText = cardHolder.value.length === 0 ?  "FULANO DA SILVA" : cardHolder.value
+})
+
+
+// .on() tem mesma função do addEventListner
+securityCodeMasked.on("accept", () => {
+    updateSecurityCode(securityCodeMasked.value)
+})
+
+
+function updateSecurityCode(code){
+  const ccSecurity = document.querySelector(".cc-security .value")
+  
+  ccSecurity.innerText = code.length === 0 ? "123" : code
+}
+
+
+// Observando o input digitado e se o contúdo digitado é válido então executa uma função
+cardNumberMasked.on("accept", () => {
+  const cardType = cardNumberMasked.masked.currentMask.cardtype
+  setCardType(cardType)
+  updateCardNumber(cardNumberMasked.value)
+})
+
+
+function updateCardNumber(number){
+  const ccNumber = document.querySelector(".cc-number")
+  ccNumber.innerText = number.length === 0 ? "1234 5678 9012 2456" : number
+}
+
+expirationDateMasked.on("accept", () => {
+  updateExpirationDate(expirationDateMasked.value)
+})
+
+
+
+function updateExpirationDate(date){
+    const ccExpiratonDate = document.querySelector(".cc-extra  .value")
+    ccExpiratonDate.innerText = date.length === 0 ? "02/32" : date
+}
+
